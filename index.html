@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Cards with Pagination</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div class="filter-container">
+  <label for="name">Search by Name:</label>
+  <input type="text" id="name" oninput="filterUsers()">
+  
+  <label for="domain">Filter by Domain:</label>
+  <select id="domain" onchange="filterUsers()">
+    <option value="">All</option>
+    <option value="Sales">Sales</option>
+    <option value="Finance">Finance</option>
+    <option value="Marketing">Marketing</option>
+    <option value="IT">IT</option>
+    <option value="Management">Management</option>
+    <option value="UI Designing">UI Designing</option>
+    <option value="Business Development">Business Development</option>
+  </select>
+
+  <label for="gender">Filter by Gender:</label>
+  <select id="gender" onchange="filterUsers()">
+    <option value="">All</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="Agender">Agender</option>
+    <option value="Bigender">Bigender</option>
+    <option value="Polygender">Polygender</option>
+  </select>
+
+  <label for="availability">Filter by Availability:</label>
+  <select id="availability" onchange="filterUsers()">
+    <option value="">All</option>
+    <option value="true">Available</option>
+    <option value="false">Not Available</option>
+  </select>
+</div>
+
+<div id="user-cards"></div>
+<ul id="pagination" class="pagination"></ul>
+
+<div class="team-container">
+  <h2>Team Details</h2>
+  <ul id="team-details"></ul>
+</div>
+
+<script src="./index.js"></script>
+
+</body>
+</html>
