@@ -28,29 +28,44 @@ function displayUsers(page) {
   const userCardsContainer = document.getElementById('user-cards');
   userCardsContainer.innerHTML = '';
 
-  usersOnPage.forEach(user => {
-    const card = document.createElement('div');
-    card.classList.add('card');
+  // Existing code...
 
-    const avatar = document.createElement('img');
-    avatar.src = user.avatar;
-    avatar.alt = `${user.first_name} ${user.last_name}'s avatar`;
-    avatar.classList.add('avatar');
+usersOnPage.forEach(user => {
+  const card = document.createElement('div');
+  card.classList.add('card');
 
-    const fullName = document.createElement('p');
-    fullName.textContent = `${user.first_name} ${user.last_name}`;
+  const avatar = document.createElement('img');
+  avatar.src = user.avatar;
+  avatar.alt = `${user.first_name} ${user.last_name}'s avatar`;
+  avatar.classList.add('avatar');
 
-    const email = document.createElement('p');
-    email.textContent = user.email;
+  const fullName = document.createElement('p');
+  fullName.textContent = `${user.first_name} ${user.last_name}`;
 
-    card.appendChild(avatar);
-    card.appendChild(fullName);
-    card.appendChild(email);
+  const email = document.createElement('p');
+  email.textContent = user.email;
 
-    card.addEventListener('click', () => addToTeam(user.id));
+  const gender = document.createElement('p');
+  gender.textContent = `Gender: ${user.gender}`;
 
-    userCardsContainer.appendChild(card);
-  });
+  const availability = document.createElement('p');
+  availability.textContent = `Availability: ${user.available ? 'Available' : 'Not Available'}`;
+
+  const domain = document.createElement('p');
+  domain.textContent = `Domain: ${user.domain}`;
+
+  card.appendChild(avatar);
+  card.appendChild(fullName);
+  card.appendChild(email);
+  card.appendChild(gender);
+  card.appendChild(availability);
+  card.appendChild(domain);
+
+  card.addEventListener('click', () => addToTeam(user.id));
+
+  userCardsContainer.appendChild(card);
+});
+
 
   displayPagination();
 }
@@ -75,6 +90,7 @@ function displayPagination() {
   updatePaginationStyles();
 }
 
+
 function updatePaginationStyles() {
   const paginationItems = document.querySelectorAll('.pagination li');
   paginationItems.forEach((item, index) => {
@@ -88,6 +104,11 @@ function updatePaginationStyles() {
 
 function applyFilters(users) {
   return users.filter(user => {
+    // Update the condition for the name filter
+    if (currentFilters.name !== '' && `${user.first_name} ${user.last_name}`.toLowerCase().includes(currentFilters.name)) {
+      return true;
+    }
+
     for (const key in currentFilters) {
       if (currentFilters[key] !== '' && String(user[key]) !== currentFilters[key]) {
         return false;
@@ -96,6 +117,7 @@ function applyFilters(users) {
     return true;
   });
 }
+
 
 function filterUsers() {
 currentFilters = {
