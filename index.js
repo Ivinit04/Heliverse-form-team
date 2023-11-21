@@ -1,12 +1,13 @@
 let users = [];
+const selectedUsers = []; // Array to store selected users for creating a team
+const teams = []; // Array to store teams, where each team is an array of selected users
+
 
 // Fetch the data from the JSON file
 fetch('mockData.json')
   .then(response => response.json())
   .then(data => {
     users = data; // Assign the fetched data to the 'users' variable
-
-    // Rest of your existing code...
 
     // Initial display
     displayUsers(currentPage);
@@ -28,11 +29,11 @@ function displayUsers(page) {
   const userCardsContainer = document.getElementById('user-cards');
   userCardsContainer.innerHTML = '';
 
-  // Existing code...
 
 usersOnPage.forEach(user => {
   const card = document.createElement('div');
   card.classList.add('card');
+  card.setAttribute('data-user-id', user.id); // Add a data attribute to identify the user
 
   const avatar = document.createElement('img');
   avatar.src = user.avatar;
@@ -129,23 +130,44 @@ currentFilters = {
 
 currentPage = 1;
 displayUsers(currentPage);
-filterTeamDetails(); // Add this line to filter team details when the name is searched
+filterTeamDetails(); //  filter team details when the name is searched
 }
 
 
 function addToTeam(userId) {
-const user = users.find(u => u.id === userId);
+  const user = users.find(u => u.id === userId);
 
-// Check if the user is available and not already in the team
-if (user.available && !teamMembers.some(member => member.id === userId)) {
-  // Check if the user's domain is unique in the team
-  if (isUniqueDomain(user.domain)) {
-    teamMembers.push(user);
-    displayTeamDetails();
-  } else {
-    alert(`A user from the domain "${user.domain}" is already in the team.`);
+  // Check if the user is available and not already in the selected users list
+  if (user.available && !selectedUsers.some(selectedUser => selectedUser.id === userId)) {
+      selectedUsers.push(user);
+
+      // Add a visual indicator to the selected user card
+      const selectedCard = document.querySelector(`.card[data-user-id="${userId}"]`);
+      if (selectedCard) {
+          selectedCard.classList.add('selected');
+      }
   }
 }
+
+function createTeam() {
+  // Check if there are selected users
+  if (selectedUsers.length > 0) {
+      // Add the selected users to the teamMembers array
+      teams.push([...selectedUsers]);
+
+      // Clear the selected users array after creating the team
+      selectedUsers.length = 0;
+
+      // Remove the visual indicator from all user cards
+      const allCards = document.querySelectorAll('.card');
+      allCards.forEach(card => card.classList.remove('selected'));
+
+      // Display the updated team details
+      displayTeamDetails();
+      displayUsers(currentPage); 
+  } else {
+      alert("Select users before creating a team.");
+  }
 }
 
 function isUniqueDomain(domain) {
@@ -158,9 +180,18 @@ function displayTeamDetails() {
   const teamDetailsContainer = document.getElementById('team-details');
   teamDetailsContainer.innerHTML = '';
 
-  teamMembers.forEach(member => {
-    const li = document.createElement('li');
-    li.textContent = `${member.first_name} ${member.last_name} (${member.domain})`;
-    teamDetailsContainer.appendChild(li);
+  teams.forEach((team, teamIndex) => {
+      const teamListItem = document.createElement('li');
+      teamListItem.textContent = `Team ${teamIndex + 1}:`;
+
+      const teamMembersList = document.createElement('ul');
+      team.forEach(user => {
+          const memberListItem = document.createElement('li');
+          memberListItem.textContent = `${user.first_name} ${user.last_name} (${user.domain})`;
+          teamMembersList.appendChild(memberListItem);
+      });
+
+      teamListItem.appendChild(teamMembersList);
+      teamDetailsContainer.appendChild(teamListItem);
   });
 }
